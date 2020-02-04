@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="header">
-      <v-header></v-header>
+      <v-header :seller="seller"></v-header>
     </div>
     <div class="tab boder-1px">
         <div class="tab-item">
@@ -20,15 +20,31 @@
 
 <script>
 import header from '@/components/header/Header.vue'
+
+const ERR_OK = 0
+
 export default {
   name: 'App',
   components: {
     'v-header': header
   },
-
   data () {
     return {
-      message: 'hello'
+      seller: {}
+    }
+  },
+  created () {
+    this.getSeller()
+  },
+  methods: {
+    getSeller () {
+      this.$axios.get('/api/seller').then(res => {
+        // console.log(res.data)
+        if (res.data.errno === ERR_OK) {
+          // console.log(res.data.data)
+          this.seller = res.data.data
+        }
+      })
     }
   }
 }
