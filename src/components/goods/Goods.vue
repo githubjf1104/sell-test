@@ -1,8 +1,8 @@
 <template>
     <div class="goods">
-      <div class="menu-wrapper" ref="meunWrapper">
+      <div class="menu-wrapper" ref="menuWrapper">
         <ul>
-          <li v-for="(item, index) in goods" :key="index" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMeun(index, $event)">
+          <li v-for="(item, index) in goods" :key="index" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMenu(index, $event)">
             <span class="text border-1px">
               <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
             </span>
@@ -33,10 +33,12 @@
           </li>
         </ul>
       </div>
+      <shopcart></shopcart>
     </div>
 </template>
 <script>
 import BScroll from 'better-scroll';
+import shopcart from '@/components/shopcart/Shopcart';
 const ERR_OK = 0;
 
 export default {
@@ -45,6 +47,9 @@ export default {
     seller: {
       type: Object
     }
+  },
+  components: {
+    shopcart
   },
   data () {
     return {
@@ -88,7 +93,7 @@ export default {
     },
     // 初始化滚动
     initScroll () {
-      this.meunScroll = new BScroll(this.$refs.meunWrapper, {
+      this.menuScroll = new BScroll(this.$refs.menuWrapper, {
         click: true
       });
       this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
@@ -111,7 +116,7 @@ export default {
       }
     },
     // 点击菜单时，商品同时改变
-    selectMeun (index, event) {
+    selectMenu (index, event) {
       // 防止在pc端是会执行两次事件
       if (!event._constructed) {
         return;
