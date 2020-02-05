@@ -5,10 +5,10 @@
     </div>
 </template>
 <script>
-const LENGTH = 5
-const CLS_ON = 'on'
-const CLS_HALF = 'half'
-const CLS_OFF = 'off'
+const LENGTH = 5;
+const CLS_ON = 'on';
+const CLS_HALF = 'half';
+const CLS_OFF = 'off';
 
 export default {
   name: 'Star',
@@ -23,28 +23,28 @@ export default {
   computed: {
     starType () {
       // 拼接类
-      return 'star-' + this.size
+      return 'star-' + this.size;
     },
     itemClass () {
-      let result = []
+      let result = [];
       // 4.5*2 = 9   4.1*2 =8.2 取整
-      let score = Math.floor(this.score * 2) / 2
+      let score = Math.floor(this.score * 2) / 2;
       // 是否存在小数
-      let hasDecimal = score % 1 !== 0
-      let integer = Math.floor(score)
+      let hasDecimal = score % 1 !== 0;
+      let integer = Math.floor(score);
       for (let i = 0; i < integer; i++) {
-        result.push(CLS_ON)
+        result.push(CLS_ON);
       }
       if (hasDecimal) {
-        result.push(CLS_HALF)
+        result.push(CLS_HALF);
       }
       while (result.length < LENGTH) {
-        result.push(CLS_OFF)
+        result.push(CLS_OFF);
       }
-      return result
+      return result;
     }
   }
-}
+};
 </script>
 <style lang="stylus" scoped>
 @import "../../common/stylus/mixin.styl"

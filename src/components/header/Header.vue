@@ -66,7 +66,7 @@
     </div>
 </template>
 <script>
-import star from '@/components/star/Star'
+import star from '@/components/star/Star';
 export default {
   name: 'Header',
   props: {
@@ -81,20 +81,20 @@ export default {
     return {
       classMap: [],
       detailShow: false
-    }
+    };
   },
   created () {
-    this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+    this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
   },
   methods: {
     handleDetailShow () {
-      this.detailShow = true
+      this.detailShow = true;
     },
     handleDetailClose () {
-      this.detailShow = false
+      this.detailShow = false;
     }
   }
-}
+};
 </script>
 
 <style lang="stylus" scoped>

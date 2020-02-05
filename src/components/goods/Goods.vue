@@ -1,17 +1,17 @@
 <template>
     <div class="goods">
-      <div class="menu-wrapper">
+      <div class="menu-wrapper" ref="meunWrapper">
         <ul>
-          <li v-for="(item, index) in goods" :key="index" class="menu-item">
+          <li v-for="(item, index) in goods" :key="index" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMeun(index, $event)">
             <span class="text border-1px">
               <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
             </span>
            </li>
         </ul>
       </div>
-      <div class="foods-wrapper">
+      <div class="foods-wrapper" ref="foodsWrapper">
         <ul>
-          <li class="food-list" v-for="(item, index) in goods" :key="index">
+          <li class="food-list food-list-hook" v-for="(item, index) in goods" :key="index">
             <h1 class="title">{{item.name}}</h1>
             <ul>
               <li v-for="(food, index) in item.foods" :key="index" class="food-item border-1px">
@@ -22,12 +22,10 @@
                     <h1 class="name">{{food.name}}</h1>
                     <p class="desc">{{food.description}}</p>
                     <div class="extra">
-                      <span class="count">月售{{food.sellCount}}份</span>
-                      <span>好评率{{food.rating}}%</span>
+                      <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}%</span>
                     </div>
                     <div class="price">
-                      <span class="now">￥{{food.price}}</span>
-                      <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
+                      <span class="now">￥{{food.price}}</span><span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                     </div>
                   </div>
               </li>
@@ -38,7 +36,8 @@
     </div>
 </template>
 <script>
-const ERR_OK = 0
+import BScroll from 'better-scroll';
+const ERR_OK = 0;
 
 export default {
   name: 'Goods',
@@ -50,25 +49,79 @@ export default {
   data () {
     return {
       goods: [],
-      classMap: []
-    }
+      classMap: [],
+      listHeight: [],
+      scrollY: 0
+    };
   },
   created () {
-    this.getGoods()
-    this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+    this.getGoods();
+    this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
+  },
+  computed: {
+    // 计算当前索引
+    currentIndex () {
+      for (let i = 0; i < this.listHeight.length; i++) {
+        let height1 = this.listHeight[i];
+        let height2 = this.listHeight[i + 1];
+        // 循环到最后一个值时，height2 为undefined
+        if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+          return i;
+        }
+      }
+      return 0;
+    }
   },
   methods: {
+    // 获取goods数据
     getGoods () {
       this.$axios.get('/api/goods').then(res => {
         // console.log(res.data)
         if (res.data.errno === ERR_OK) {
-          this.goods = res.data.data
-          // console.log(this.goods)
+          this.goods = res.data.data;
+          this.$nextTick(() => {
+            this.initScroll();
+            this.calculateHeight();
+          });
         }
-      })
+      });
+    },
+    // 初始化滚动
+    initScroll () {
+      this.meunScroll = new BScroll(this.$refs.meunWrapper, {
+        click: true
+      });
+      this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+        // 实时监听滚动的位置
+        probeType: 3
+      });
+      this.foodsScroll.on('scroll', (pos) => {
+        this.scrollY = Math.abs(Math.round(pos.y));
+      });
+    },
+    // 菜单与商品联动,通过计算高度
+    calculateHeight () {
+      let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+      let height = 0;
+      this.listHeight.push(height);
+      for (let i = 0; i < foodList.length; i++) {
+        let item = foodList[i];
+        height += item.clientHeight;
+        this.listHeight.push(height);
+      }
+    },
+    // 点击菜单时，商品同时改变
+    selectMeun (index, event) {
+      // 防止在pc端是会执行两次事件
+      if (!event._constructed) {
+        return;
+      }
+      let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+      let el = foodList[index];
+      this.foodsScroll.scrollToElement(el, 300);
     }
   }
-}
+};
 </script>
 <style lang="stylus" scoped>
 @import "../../common/stylus/mixin.styl"
@@ -89,6 +142,14 @@ export default {
       width: 56px
       line-height: 14px
       padding: 0 12px
+      &.current
+        position: relative
+        z-index: 10
+        margin-top: -1px
+        background: #fff
+        font-weight: 700
+        .text
+          border-none()
       .icon
         display: inline-block
         vertical-align: top
@@ -147,9 +208,10 @@ export default {
           font-size: 10px
           color: rgb(147, 153, 159)
         .desc
+          line-height: 12px
           margin-bottom: 8px
         .extra
-          &.count
+          .count
             margin-right: 12px
         .price
           line-height: 24px
@@ -159,7 +221,7 @@ export default {
             font-size: 14px
             color: rgb(240, 20, 20)
           .old
-            text-direction: line-through
+            text-decoration: line-through
             font-size: 10px
             color: rgb(147, 153, 159)
 </style>

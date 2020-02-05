@@ -19,9 +19,9 @@
 </template>
 
 <script>
-import header from '@/components/header/Header.vue'
+import header from '@/components/header/Header.vue';
 
-const ERR_OK = 0
+const ERR_OK = 0;
 
 export default {
   name: 'App',
@@ -31,10 +31,10 @@ export default {
   data () {
     return {
       seller: {}
-    }
+    };
   },
   created () {
-    this.getSeller()
+    this.getSeller();
   },
   methods: {
     getSeller () {
@@ -42,12 +42,12 @@ export default {
         // console.log(res.data)
         if (res.data.errno === ERR_OK) {
           // console.log(res.data.data)
-          this.seller = res.data.data
+          this.seller = res.data.data;
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="stylus" scoped>
