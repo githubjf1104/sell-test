@@ -27,18 +27,22 @@
                     <div class="price">
                       <span class="now">￥{{food.price}}</span><span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                     </div>
+                    <div class="cartcontrol-wrapper">
+                      <cartcontrol :food="food"></cartcontrol>
+                    </div>
                   </div>
               </li>
             </ul>
           </li>
         </ul>
       </div>
-      <shopcart></shopcart>
+      <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods"></shopcart>
     </div>
 </template>
 <script>
 import BScroll from 'better-scroll';
 import shopcart from '@/components/shopcart/Shopcart';
+import cartcontrol from '@/components/cartcontrol/CartControl';
 const ERR_OK = 0;
 
 export default {
@@ -49,7 +53,8 @@ export default {
     }
   },
   components: {
-    shopcart
+    shopcart,
+    cartcontrol
   },
   data () {
     return {
@@ -64,7 +69,7 @@ export default {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
   },
   computed: {
-    // 计算当前索引
+    // 计算当前索引,高亮显示
     currentIndex () {
       for (let i = 0; i < this.listHeight.length; i++) {
         let height1 = this.listHeight[i];
@@ -75,6 +80,17 @@ export default {
         }
       }
       return 0;
+    },
+    selectFoods () {
+      let foods = [];
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          if (food.count) {
+            foods.push(food);
+          }
+        });
+      });
+      return foods;
     }
   },
   methods: {
@@ -97,6 +113,7 @@ export default {
         click: true
       });
       this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+        click: true,
         // 实时监听滚动的位置
         probeType: 3
       });
@@ -229,4 +246,8 @@ export default {
             text-decoration: line-through
             font-size: 10px
             color: rgb(147, 153, 159)
+        .cartcontrol-wrapper
+          position: absolute
+          right: 0
+          bottom: 12px
 </style>
