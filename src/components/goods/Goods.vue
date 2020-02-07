@@ -28,7 +28,7 @@
                       <span class="now">￥{{food.price}}</span><span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                     </div>
                     <div class="cartcontrol-wrapper">
-                      <cartcontrol :food="food"></cartcontrol>
+                      <cartcontrol :food="food" @add="addFood"></cartcontrol>
                     </div>
                   </div>
               </li>
@@ -36,7 +36,7 @@
           </li>
         </ul>
       </div>
-      <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods"></shopcart>
+      <shopcart ref="shopcart" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods"></shopcart>
     </div>
 </template>
 <script>
@@ -141,12 +141,25 @@ export default {
       let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
       let el = foodList[index];
       this.foodsScroll.scrollToElement(el, 300);
+    },
+
+    // cartcontrol 中点击添加按钮触发
+    addFood (target) {
+      this._drop(target);
+    },
+    // 处理小球下落方法
+    _drop (target) {
+      // 体验优化,异步执行下落动画
+      this.$nextTick(() => {
+        this.$refs.shopcart.drop(target);
+      });
     }
   }
 };
 </script>
 <style lang="stylus" scoped>
 @import "../../common/stylus/mixin.styl"
+
 .goods
   display: flex
   position: absolute

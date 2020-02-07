@@ -2,13 +2,11 @@
     <div class="cartcontrol">
         <transition name="move">
             <div class="cart-decrease" v-show="food.count>0" @click.stop.prevent="decreaseCart">
-                <span class="iconfont icon-jiajian"></span>
+                <span class="inner iconfont icon-jiajian"></span>
             </div>
         </transition>
         <div class="cart-count" v-show="food.count>0">{{food.count}}</div>
-        <div class="cart-add" @click.stop.prevent="addCart">
-            <span class="iconfont icon-jiajian1"></span>
-        </div>
+        <div class="cart-add iconfont icon-jiajian1" @click.stop.prevent="addCart"></div>
     </div>
 </template>
 <script>
@@ -35,6 +33,7 @@ export default {
       } else {
         this.food.count++;
       }
+      this.$emit('add', event.target);
     },
     // 减少商品
     decreaseCart (event) {
@@ -51,19 +50,25 @@ export default {
 <style lang="stylus" scoped>
 .cartcontrol
   font-size: 0
-  .cart-decrease, .cart-add
+  .cart-decrease
     display: inline-block
-    color: rgb(0, 160, 220)
     padding: 6px
-    font-size: 24px
-    line-height: 24px
     opacity: 1
     transform: translate3d(0, 0, 0)
+    .inner
+      display: inline-block
+      line-height: 24px
+      font-size: 24px
+      color: rgb(0, 160, 220)
+      transition: all 0.4s linear
+      transform: rotate(0)
     &.move-enter-active, &.move-leave-active
       transition: all 0.4s linear
     &.move-enter, &.move-leave-active
       opacity: 0
       transform: translate3d(24px, 0, 0)
+      .inner
+        transform: rotate(180deg)
   .cart-count
     display: inline-block
     vertical-align: top
