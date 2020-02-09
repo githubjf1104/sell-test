@@ -7,7 +7,9 @@ import axios from 'axios';
 import './common/css/reset.css';
 import './common/css/iconfont.css';
 import './common/stylus/index.styl';
-
+import FastClick from 'fastclick';
+// 解决移动端300毫秒点击延迟问题
+FastClick.attach(document.body);
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
 

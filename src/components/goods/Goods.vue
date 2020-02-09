@@ -1,5 +1,6 @@
 <template>
-    <div class="goods">
+  <div>
+      <div class="goods">
       <div class="menu-wrapper" ref="menuWrapper">
         <ul>
           <li v-for="(item, index) in goods" :key="index" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMenu(index, $event)">
@@ -14,7 +15,7 @@
           <li class="food-list food-list-hook" v-for="(item, index) in goods" :key="index">
             <h1 class="title">{{item.name}}</h1>
             <ul>
-              <li v-for="(food, index) in item.foods" :key="index" class="food-item border-1px">
+              <li v-for="(food, index) in item.foods" :key="index" class="food-item border-1px" @click="handleChoosedFood(food,$event)">
                   <div class="icon">
                     <img :src="food.icon" alt="食物图片" width="57" height="57">
                   </div>
@@ -38,11 +39,14 @@
       </div>
       <shopcart ref="shopcart" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods"></shopcart>
     </div>
+    <fooddetail :food="choosedFood" ref="foodDetail"></fooddetail>
+  </div>
 </template>
 <script>
 import BScroll from 'better-scroll';
 import shopcart from '@/components/shopcart/Shopcart';
 import cartcontrol from '@/components/cartcontrol/CartControl';
+import fooddetail from '@/components/fooddetail/FoodDetail';
 const ERR_OK = 0;
 
 export default {
@@ -54,14 +58,16 @@ export default {
   },
   components: {
     shopcart,
-    cartcontrol
+    cartcontrol,
+    fooddetail
   },
   data () {
     return {
       goods: [],
       classMap: [],
       listHeight: [],
-      scrollY: 0
+      scrollY: 0,
+      choosedFood: {}
     };
   },
   created () {
@@ -101,14 +107,14 @@ export default {
         if (res.data.errno === ERR_OK) {
           this.goods = res.data.data;
           this.$nextTick(() => {
-            this.initScroll();
+            this._initScroll();
             this.calculateHeight();
           });
         }
       });
     },
     // 初始化滚动
-    initScroll () {
+    _initScroll () {
       this.menuScroll = new BScroll(this.$refs.menuWrapper, {
         click: true
       });
@@ -153,6 +159,14 @@ export default {
       this.$nextTick(() => {
         this.$refs.shopcart.drop(target);
       });
+    },
+    handleChoosedFood (food, event) {
+      if (!event._constructed) {
+        return;
+      }
+      this.choosedFood = food;
+      // console.log(food);
+      this.$refs.foodDetail.showFood();
     }
   }
 };
