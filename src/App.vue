@@ -14,12 +14,15 @@
           <router-link to="/seller">商家</router-link>
         </div>
     </div>
-     <router-view :seller="seller"/>
+    <keep-alive>
+      <router-view :seller="seller"/>
+    </keep-alive>
   </div>
 </template>
 
 <script>
 import header from '@/components/header/Header.vue';
+import utils from './common/js/utils';
 
 const ERR_OK = 0;
 
@@ -30,7 +33,12 @@ export default {
   },
   data () {
     return {
-      seller: {}
+      seller: {
+        id: (() => {
+          let queryParam = utils.urlParse();
+          return queryParam.id;
+        })()
+      }
     };
   },
   created () {
@@ -38,11 +46,12 @@ export default {
   },
   methods: {
     getSeller () {
-      this.$axios.get('/api/seller').then(res => {
+      this.$axios.get('/api/seller?id' + this.seller.id).then(res => {
         // console.log(res.data)
         if (res.data.errno === ERR_OK) {
           // console.log(res.data.data)
-          this.seller = res.data.data;
+          // this.seller = res.data.data;
+          this.seller = Object.assign({}, this.seller, res.data.data);
         }
       });
     }

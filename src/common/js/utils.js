@@ -26,21 +26,43 @@ var utils = {
   // 当时间为单个数时拼接 0
   padLeftZero (str) {
     return ('00' + str).substr(str.length);
+  },
+  // dateFormat (date, pattern) {
+  //     var dt = new Date(date);
+  //     var y = dt.getFullYear();
+  //     var m = dt.getMonth() + 1;
+  //     var d = dt.getDate();
+  //     if(pattern && pattern.toLowerCase()=== 'yyyy-mm-dd'){
+  //         return `${y}-${m}-${d}`;
+  //     }else{
+  //         var hh = dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours();
+  //         var mm = dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes();
+  //         var ss = dt.getSeconds() < 10 ? '0' + dt.getSeconds() : dt.getSeconds();
+  //         return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+  //       }
+  //    }
+
+  /*
+   * 解析url参数
+   * @example ?id=12345&a=b
+   * @return Object {id:12345, a:b}
+  */
+  urlParse () {
+    let url = window.location.search;
+    let obj = {};
+    let reg = /[?&][^?&]+=[^?&]+/g;
+    let arr = url.match(reg);
+    // ['?id=12345', '&a=b']
+    if (arr) {
+      arr.forEach((item) => {
+        let tempArr = item.substring(1).split('=');
+        let key = decodeURIComponent(tempArr[0]);
+        let val = decodeURIComponent(tempArr[1]);
+        obj[key] = val;
+      });
+    }
+    return obj;
   }
-// dateFormat (date, pattern) {
-//     var dt = new Date(date);
-//     var y = dt.getFullYear();
-//     var m = dt.getMonth() + 1;
-//     var d = dt.getDate();
-//     if(pattern && pattern.toLowerCase()=== 'yyyy-mm-dd'){
-//         return `${y}-${m}-${d}`;
-//     }else{
-//         var hh = dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours();
-//         var mm = dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes();
-//         var ss = dt.getSeconds() < 10 ? '0' + dt.getSeconds() : dt.getSeconds();
-//         return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
-//       }
-//    }
 };
 
 export default utils;
