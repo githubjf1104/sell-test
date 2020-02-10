@@ -62,7 +62,7 @@ import Vue from 'vue';
 import cartcontrol from '@/components/cartcontrol/CartControl';
 import split from '@/components/split/Split';
 import ratingselect from '@/components/ratingselect/RatingSelect';
-import utils from '../../common/js/date';
+import utils from '../../common/js/utils';
 // const POSITIVE = 0;
 // const NEGATIVE = 1;
 const ALL = 2;

@@ -1,5 +1,5 @@
 var utils = {
-  // 利用正则
+  // 利用正则格式化时间
   formatDate (date, fmt) {
     // 匹配fmt中的年
     if (/(y+)/.test(fmt)) {
